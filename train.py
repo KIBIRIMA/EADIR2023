@@ -1,49 +1,48 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from custom_dataset import CustomDataset
-from model import Model
+from torch.utils.data import DataLoader
 
-# Créer une instance de CustomDataset avec les chemins d'accès aux données appropriés
-dataset = CustomDataset(image_paths, mask_paths, target_size)
+from customdataset import CustomDataset
+from model import EfficientNetB0_BiFPN
 
-# Créer un DataLoader pour itérer sur les données en mini-lots pendant l'entraînement
-dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
+# Chemins d'accès aux images et aux masques
+image_dir = "chemin/vers/le/repertoire/des/images"
+mask_dir = "chemin/vers/le/repertoire/des/masques"
 
-# Créer une instance du modèle
-model = Model()
-
-# Définir la fonction de perte
-criterion = nn.MSELoss()
-
-# Définir l'optimiseur avec le taux d'apprentissage souhaité
-learning_rate = 0.001
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-
-# Mettre en place la boucle d'entraînement
+# Hyperparamètres
+batch_size = 16
+lr = 0.001
 num_epochs = 10
 
+# Instanciation du Dataset
+dataset = CustomDataset(image_dir, mask_dir)
+
+# Création du DataLoader
+dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+# Instanciation du modèle
+model = EfficientNetB0_BiFPN()
+
+# Définition de la fonction de perte et de l'optimiseur
+criterion = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=lr)
+
+# Boucle d'entraînement
 for epoch in range(num_epochs):
-    # Entraînement du modèle
-    model.train()
-
-    for image, target in dataloader:
-        # Remettre les gradients à zéro
+    for images, masks in dataloader:
+        # Remise à zéro des gradients
         optimizer.zero_grad()
-
-        # Passage avant à travers le modèle
-        output = model(image)
-
+        
+        # Passage avant du modèle
+        outputs = model(images)
+        
         # Calcul de la perte
-        loss = criterion(output, target)
-
-        # Rétropropagation
+        loss = criterion(outputs, masks)
+        
+        # Rétropropagation et mise à jour des poids
         loss.backward()
-
-        # Mise à jour des poids
         optimizer.step()
-
-    # Affichage de la perte de l'époque actuelle
-    print(f"Epoch {epoch+1}/{num_epochs}, Loss: {loss.item()}")
-
-    # Éventuellement, effectuer une évaluation/validation du modèle après chaque époque
+        
+        # Affichage des statistiques d'entraînement
+        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}")
