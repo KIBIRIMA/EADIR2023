@@ -1,28 +1,31 @@
 import torch
 import matplotlib.pyplot as plt
+import torch.nn.functional as F
 from torch.utils.data import Dataset
 from PIL import Image
 
 class CustomDataset(Dataset):
-    def __init__(self, image_paths, mask_paths, transform=None):
+     def __init__(self, image_paths, mask_paths, target_size):
         self.image_paths = image_paths
         self.mask_paths = mask_paths
-        self.transform = transform
-
+        self.target_size = target_size
+        
     def __len__(self):
         return len(self.image_paths)
 
-    def __getitem__(self, idx):
-        image_path = self.image_paths[idx]
-        mask_path = self.mask_paths[idx]
+def __getitem__(self, index):
+        image_path = self.image_paths[index]
+        mask_path = self.mask_paths[index]
 
-        # Charger l'image à partir du chemin d'accès et appliquer les prétraitements
+        # Charger l'image
         image = self.load_image(image_path)
-        mask = self.load_image(mask_path)
 
-        # Appliquer des transformations si nécessaire
-        if self.transform is not None:
-            image, mask = self.transform(image, mask)
+        # Charger le masque cible
+        mask = self.load_mask(mask_path)
+
+        # Redimensionner le masque cible à la taille souhaitée en utilisant l'interpolation bilinéaire
+        mask = F.interpolate(mask.unsqueeze(0), size=self.target_size, mode='bilinear', align_corners=False)
+        mask = mask.squeeze(0)
 
         return image, mask
 
