@@ -7,8 +7,8 @@ from customdataset import CustomDataset
 from model import EfficientNetB0_BiFPN
 
 # Chemins d'accès aux images et aux masques
-image_dir = "chemin/vers/le/repertoire/des/images"
-mask_dir = "chemin/vers/le/repertoire/des/masques"
+image_dir = "https://www.kaggle.com/datasets/vineeth1999/128128-hubmap?select=train"
+mask_dir = "https://www.kaggle.com/datasets/vineeth1999/128128-hubmap?select=masks"
 
 # Hyperparamètres
 batch_size = 16
