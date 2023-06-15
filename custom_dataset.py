@@ -1,4 +1,5 @@
 import torch
+import matplotlib.pyplot as plt
 from torch.utils.data import Dataset
 from PIL import Image
 
@@ -42,3 +43,24 @@ class CustomDataset(Dataset):
         # Par exemple, redimensionner le masque, convertir en tenseur PyTorch, etc.
 
         return mask
+     def display_images(self, num_samples=5):
+        for i in range(num_samples):
+            image_path = self.image_paths[i]
+            mask_path = self.mask_paths[i]
+
+            image = self.load_image(image_path)
+            mask = self.load_mask(mask_path)
+
+            plt.subplot(num_samples, 2, 2*i+1)
+            plt.imshow(image)
+            plt.title("Input Image")
+            plt.axis('off')
+
+            plt.subplot(num_samples, 2, 2*i+2)
+            plt.imshow(mask, cmap='gray')
+            plt.title("Target Mask")
+            plt.axis('off')
+
+        plt.tight_layout()
+        plt.show()
+
