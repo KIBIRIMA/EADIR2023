@@ -1,14 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import glob
 from torch.utils.data import DataLoader
 
 from customdataset import CustomDataset
 from model import EfficientNetB0_BiFPN
 
 # Chemins d'accès aux images et aux masques
-image_dir = "C:\Users\Admin\Downloads\Project Dataset\train"
-mask_dir = "C:\Users\Admin\Downloads\Project Dataset\masks"
+image_paths = glob.glob('C:\\Users\\Admin\\Downloads\\Project Dataset\\train\\*.png')
+mask_paths = glob.glob('C:\\Users\\Admin\\Downloads\\Project Dataset\\masks\\*.png')
 
 # Hyperparamètres
 batch_size = 16
@@ -16,7 +17,7 @@ lr = 0.001
 num_epochs = 10
 
 # Instanciation du Dataset
-dataset = CustomDataset(image_dir, mask_dir)
+dataset = CustomDataset(image_paths, mask_paths, target_size=(56, 56))
 
 # Création du DataLoader
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
