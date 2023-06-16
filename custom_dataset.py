@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import torch.nn.functional as F
 from torch.utils.data import Dataset
 from PIL import Image
+import glob
 
 class CustomDataset(Dataset):
-     def __init__(self, image_paths, mask_paths, target_size):
+    def __init__(self, image_paths, mask_paths, target_size):
         self.image_paths = image_paths
         self.mask_paths = mask_paths
         self.target_size = target_size
@@ -13,7 +14,7 @@ class CustomDataset(Dataset):
     def __len__(self):
         return len(self.image_paths)
 
-def __getitem__(self, index):
+    def __getitem__(self, index):
         image_path = self.image_paths[index]
         mask_path = self.mask_paths[index]
 
@@ -46,7 +47,8 @@ def __getitem__(self, index):
         # Par exemple, redimensionner le masque, convertir en tenseur PyTorch, etc.
 
         return mask
-     def display_images(self, num_samples=5):
+    
+    def display_images(self, num_samples=5):
         for i in range(num_samples):
             image_path = self.image_paths[i]
             mask_path = self.mask_paths[i]
@@ -66,4 +68,3 @@ def __getitem__(self, index):
 
         plt.tight_layout()
         plt.show()
-
