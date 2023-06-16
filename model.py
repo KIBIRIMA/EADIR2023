@@ -69,3 +69,12 @@ class BiFPNBlock(nn.Module):
 
         # Retourner les caractéristiques fusionnées
         return [upsampled, downsampled]
+
+# Instanciation du modèle
+num_classes = 1  # Nombre de classes de sortie (dans cet exemple, une seule classe pour la segmentation binaire)
+model = Model(num_classes)
+
+# Exemple d'utilisation du modèle
+input_tensor = torch.randn(1, 3, 224, 224)  # Tensor d'exemple en entrée (batch_size=1, 3 canaux RGB, résolution 224x224)
+output = model(input_tensor)
+print("Output shape:", output.shape)
